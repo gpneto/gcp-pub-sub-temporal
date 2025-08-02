@@ -1,2 +1,3 @@
 temporalio
 flask
+google-cloud-pubsub
