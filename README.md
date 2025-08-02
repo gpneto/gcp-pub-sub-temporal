@@ -11,17 +11,15 @@ Este projeto demonstra como integrar Google Cloud Pub/Sub com Temporal.io para o
 
 ## Passos
 
-1. Crie o tópico e a subscrição:
+### 1. Crie o tópico e a subscrição Pull:
 
 ```bash
 gcloud pubsub topics create pedidos
-gcloud pubsub subscriptions create temporal-trigger \
-  --topic=pedidos \
-  --push-endpoint=http://localhost:8080/pubsub \
-  --ack-deadline=60
+
+gcloud pubsub subscriptions create temporal-pull --topic=pedidos
 ```
 
-2. Suba o Temporal localmente:
+### 2. Suba o Temporal localmente:
 
 ```bash
 git clone https://github.com/temporalio/docker-compose.git
@@ -29,23 +27,39 @@ cd docker-compose
 docker-compose up
 ```
 
-3. Instale as dependências e execute:
+Interface Web: http://localhost:8233  
+Servidor: localhost:7233
+
+### 3. Instale as dependências e ative o ambiente virtual:
 
 ```bash
+python -m venv .venv
+source .venv/bin/activate
 pip install -r requirements.txt
+```
+
+### 4. Em um terminal, execute o Worker do Temporal:
+
+```bash
 python worker.py
 ```
 
-4. Em outro terminal:
+### 5. Em outro terminal, execute o consumidor Pub/Sub Pull:
 
 ```bash
-python server.py
+python pubsub_consumer_pull.py
 ```
 
-5. Publique um evento:
+### 6. Publique um evento:
 
 ```bash
 gcloud pubsub topics publish pedidos --message="12345"
 ```
 
-Acompanhe a execução em http://localhost:8233
+### 7. Verifique a execução
+
+- O worker processa o pedido
+- A etapa `processar_pagamento` falha de propósito
+- O workflow executa `estornar_pagamento` e `libertar_estoque`
+- Acompanhe a execução via http://localhost:8233
+
