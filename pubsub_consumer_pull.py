@@ -15,7 +15,7 @@ async def iniciar_workflow(pedido_id: str):
 
 def consumir_mensagens():
     subscriber = pubsub_v1.SubscriberClient()
-    subscription_path = subscriber.subscription_path("smart-school-egalite", "temporal-pull")
+    subscription_path = subscriber.subscription_path("projet-exemple", "temporal-pull")
 
     def callback(message):
         try:
